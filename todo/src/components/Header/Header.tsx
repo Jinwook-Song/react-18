@@ -1,4 +1,6 @@
+import { HiMoon, HiSun } from 'react-icons/hi';
 import { TodoFilter } from '../../App';
+import { useDarkMode } from '../../context/DarkModeContext';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -12,9 +14,12 @@ export default function Header({
   filters,
   onFilterChange,
 }: HeaderProps) {
-  console.log(filter);
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
   return (
     <header className={styles.header}>
+      <button className={styles.toggle} onClick={toggleDarkMode}>
+        {isDarkMode ? <HiMoon /> : <HiSun />}
+      </button>
       <ul className={styles.filters}>
         {filters.map((value, index) => (
           <li key={index}>
