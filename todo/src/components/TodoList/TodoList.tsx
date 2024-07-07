@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddTodo from '../AddtTodo/AddTodo';
 import Todo, { TodoType } from '../Todo/Todo';
 import { TodoFilter } from '../../App';
@@ -8,11 +8,10 @@ interface TodoListProps {
   filter: TodoFilter;
 }
 
+const LS_TODO_KEY = 'react__todos';
+
 export default function TodoList({ filter }: TodoListProps) {
-  const [todos, setTodos] = useState<TodoType[]>([
-    { id: '123', text: '장보기', status: 'active' },
-    { id: '124', text: '공부하기', status: 'active' },
-  ]);
+  const [todos, setTodos] = useState<TodoType[]>(readTodosFromLocalStorage);
 
   const handleAdd = (todo: TodoType) => setTodos([...todos, todo]);
   const handleUpdate = (todo: TodoType) =>
@@ -21,6 +20,10 @@ export default function TodoList({ filter }: TodoListProps) {
     setTodos(todos.filter((t) => t.id !== todo.id));
 
   const filteredTodos = getFilteredTodos(todos, filter);
+
+  useEffect(() => {
+    localStorage.setItem(LS_TODO_KEY, JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <section className={styles.container}>
@@ -37,6 +40,13 @@ export default function TodoList({ filter }: TodoListProps) {
       <AddTodo onAdd={handleAdd} />
     </section>
   );
+}
+
+function readTodosFromLocalStorage(): TodoType[] {
+  console.log('first');
+  const todos = localStorage.getItem(LS_TODO_KEY);
+  if (todos) return JSON.parse(todos);
+  else return [];
 }
 
 function getFilteredTodos(todos: TodoType[], filter: TodoFilter) {

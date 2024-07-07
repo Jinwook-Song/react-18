@@ -14,7 +14,7 @@ interface TodoProps {
 }
 
 export default function Todo({ todo, onUpdate, onDelete }: TodoProps) {
-  const { text, status } = todo;
+  const { id, text, status } = todo;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const status = e.target.checked ? 'completed' : 'active';
     onUpdate({ ...todo, status });
@@ -25,11 +25,11 @@ export default function Todo({ todo, onUpdate, onDelete }: TodoProps) {
       <input
         className={styles.checkbox}
         type='checkbox'
-        id='checkbox'
+        id={id}
         checked={status === 'completed'}
         onChange={handleChange}
       />
-      <label className={styles.text} htmlFor='checkbox'>
+      <label className={styles.text} htmlFor={id}>
         {text}
       </label>
       <span className={styles.icon}>
