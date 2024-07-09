@@ -1,0 +1,43 @@
+{
+  "kind": "youtube#channelListResponse",
+  "etag": "BxBIjCE1rkhoN42ptR9Fd-0_bvE",
+  "pageInfo": {
+    "totalResults": 1,
+    "resultsPerPage": 5
+  },
+  "items": [
+    {
+      "kind": "youtube#channel",
+      "etag": "RWEfx1uUxE86xhKrTxdOSNhH4oU",
+      "id": "UCC1LvVTX2ySKYjeIXkAtvsQ",
+      "snippet": {
+        "title": "침착맨 플러스",
+        "description": "침착맨의 게임 및 뒷고기 영상이 올라갑니다.\n",
+        "customUrl": "@chimchakman_plus",
+        "publishedAt": "2020-06-05T09:51:27.926126Z",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/vVYuVT-7NtG5BIXA7Y0VPWdkjIom1dr6XEgI1GoQ6JvbTgpKk1n6RgalRHO6bubt4fsHMSd9XtE=s88-c-k-c0x00ffffff-no-rj",
+            "width": 88,
+            "height": 88
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/vVYuVT-7NtG5BIXA7Y0VPWdkjIom1dr6XEgI1GoQ6JvbTgpKk1n6RgalRHO6bubt4fsHMSd9XtE=s240-c-k-c0x00ffffff-no-rj",
+            "width": 240,
+            "height": 240
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/vVYuVT-7NtG5BIXA7Y0VPWdkjIom1dr6XEgI1GoQ6JvbTgpKk1n6RgalRHO6bubt4fsHMSd9XtE=s800-c-k-c0x00ffffff-no-rj",
+            "width": 800,
+            "height": 800
+          }
+        },
+        "localized": {
+          "title": "침착맨 플러스",
+          "description": "침착맨의 게임 및 뒷고기 영상이 올라갑니다.\n"
+        },
+        "country": "KR"
+      }
+    }
+  ]
+}
