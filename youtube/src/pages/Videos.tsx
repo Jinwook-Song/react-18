@@ -1,3 +1,6 @@
+import { useParams } from 'react-router-dom';
+
 export default function Videos() {
-  return <div>Videos</div>;
+  const { keyword } = useParams();
+  return <div className=''>Videos {keyword ?? '🔥'}</div>;
 }
