@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { YoutubeApi } from './youtube';
 
-export default class MockYoutube {
+export default class MockYoutube implements YoutubeApi {
   constructor() {}
   async search(keyword?: string) {
     return keyword ? this.searchBykeyword() : this.mostPopular();

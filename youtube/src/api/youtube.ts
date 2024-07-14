@@ -1,6 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
+import { Video } from '../types';
 
-export default class Youtube {
+export interface YoutubeApi {
+  search(keyword?: string): Promise<Video[]>;
+}
+
+export default class Youtube implements YoutubeApi {
   private httpClient: AxiosInstance;
   constructor() {
     this.httpClient = axios.create({
@@ -12,7 +17,7 @@ export default class Youtube {
     return keyword ? this.searchBykeyword(keyword) : this.mostPopular();
   }
 
-  private async searchBykeyword(keyword: string) {
+  private async searchBykeyword(keyword: string): Promise<Video[]> {
     return this.httpClient('search', {
       params: {
         part: 'snippet',
@@ -27,10 +32,11 @@ export default class Youtube {
       );
   }
 
-  private async mostPopular() {
+  private async mostPopular(): Promise<Video[]> {
     return this.httpClient('videos', {
       params: {
         part: 'snippet',
+        type: 'video',
         maxResults: 25,
         chart: 'mostPopular',
       },
