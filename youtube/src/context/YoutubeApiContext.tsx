@@ -7,7 +7,7 @@ export const YoutubeApiContext = createContext<YoutubeApi | undefined>(
   undefined,
 );
 
-const useMockData = true;
+const useMockData = false;
 const client = useMockData ? new MockYoutubeClient() : new YoutubeClient();
 
 // DI

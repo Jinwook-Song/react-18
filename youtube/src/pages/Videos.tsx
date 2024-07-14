@@ -14,6 +14,7 @@ export default function Videos() {
   } = useQuery<Video[]>({
     queryKey: ['videos', keyword],
     queryFn: () => youtubeApi!.search(keyword),
+    staleTime: 1000 * 60 * 1,
   });
   return (
     <>
