@@ -1,13 +1,18 @@
 import { createContext, useContext } from 'react';
 import Youtube, { YoutubeApi } from '../api/youtube';
-import MockYoutube from '../api/mock-youtube';
+import MockYoutubeClient from '../api/mockYoutubeClient';
+import YoutubeClient from '../api/youtubeClient';
 
 export const YoutubeApiContext = createContext<YoutubeApi | undefined>(
   undefined,
 );
 
 const useMockData = true;
-const youtube = useMockData ? new MockYoutube() : new Youtube();
+const client = useMockData ? new MockYoutubeClient() : new YoutubeClient();
+
+// DI
+const youtube = new Youtube(client);
+
 export function YoutubeApiProvider({
   children,
 }: {

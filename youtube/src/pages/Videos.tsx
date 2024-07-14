@@ -19,7 +19,7 @@ export default function Videos() {
     <>
       <div className=''>Videos {keyword ?? '🔥'}</div>
       {isLoading && <p>Loading...</p>}
-      {error && <p>Something is wrong</p>}
+      {error && <p>Something is wrong {error.message}</p>}
       {videos && (
         <ul>
           {videos.map((video) => (
