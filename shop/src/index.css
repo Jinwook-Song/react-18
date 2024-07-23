@@ -19,3 +19,7 @@ body {
 #root {
   @apply w-full max-w-screen-2xl;
 }
+
+form#add-product input {
+  @apply p-2 rounded-sm shadow-md ring-1 ring-slate-900 focus:ring-2 focus:ring-brand border-none transition;
+}

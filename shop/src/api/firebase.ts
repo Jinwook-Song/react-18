@@ -15,6 +15,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import { UserModel } from '../models';
+import { ProductType } from '../pages/NewProduct';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -34,6 +35,7 @@ const provider = new GoogleAuthProvider();
 
 enum FIRESTORE_COLLECTIONS {
   users = 'users',
+  products = 'products',
 }
 
 export async function login() {
@@ -78,4 +80,13 @@ async function adminUser(user: User) {
   const docRef = doc(firestore, FIRESTORE_COLLECTIONS.users, user.uid);
   const docSnap = await getDoc(docRef);
   return docSnap.data()!['role'] === 'admin';
+}
+
+export async function addNewProduct(product: ProductType) {
+  await setDoc(doc(firestore, FIRESTORE_COLLECTIONS.products, product.id), {
+    ...product,
+    options: product.options.split(','),
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  });
 }

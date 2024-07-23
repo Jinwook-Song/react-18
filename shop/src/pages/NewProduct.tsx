@@ -1,12 +1,19 @@
 import { useState } from 'react';
+
+import { v4 as uuid } from 'uuid';
+
 import Button from '../components/ui/Button';
-import { FaClosedCaptioning } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { cls } from '../utils';
 import { uploadImage } from '../api/uploader';
+import { addNewProduct } from '../api/firebase';
+import { useAuthContext } from '../context/AuthContext';
+import Toast from '../components/ui/Toast';
 
-type ProductType = {
+export type ProductType = {
   id: string;
+  uid: string;
+  image: string;
   title: string;
   price: number;
   category: string;
@@ -15,12 +22,36 @@ type ProductType = {
 };
 
 export default function NewProduct() {
+  const { user } = useAuthContext();
+
   const [product, setProduct] = useState<Partial<ProductType>>({});
   const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [success, setSuccess] = useState<boolean | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    uploadImage(file!).then(console.log);
+    setUploading(true);
+    try {
+      const image = await uploadImage(file!);
+      const id = uuid();
+      const newProduct = {
+        ...product,
+        id,
+        uid: user!.uid,
+        price: +product.price!,
+        image,
+      } as ProductType;
+
+      await addNewProduct(newProduct);
+      setSuccess(true);
+      setFile(null);
+      setProduct({});
+    } catch (error) {
+      setSuccess(false);
+    } finally {
+      setUploading(false);
+    }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.currentTarget;
@@ -32,7 +63,8 @@ export default function NewProduct() {
     setProduct({ ...product, [name]: value });
   };
   return (
-    <section className='w-full max-w-screen-lg h-full flex flex-col justify-center items-center gap-y-4 mt-8 mx-auto px-2 sm:px-6'>
+    <section className='w-full max-w-screen-lg h-full flex flex-col justify-center items-center gap-y-4 mx-auto px-2 sm:px-6'>
+      <h2 className='text-lg font-bold my-4'>새로운 제품 등록</h2>
       {file && (
         <div className='relative min-w-40 flex justify-center items-center'>
           <img
@@ -49,6 +81,7 @@ export default function NewProduct() {
         </div>
       )}
       <form
+        id='add-product'
         onSubmit={handleSubmit}
         className='w-full flex flex-col items-center gap-y-2 *:w-full'
       >
@@ -113,8 +146,16 @@ export default function NewProduct() {
           onChange={handleChange}
           required
         />
-        <Button text='제품 등록하기' onClick={() => {}} />
+        <Button disabled={uploading} text='제품 등록하기' onClick={() => {}} />
       </form>
+      {success === true && (
+        <Toast
+          message={'제품이 업로드 되었습니다.'}
+          onClose={() => {
+            setSuccess(null);
+          }}
+        />
+      )}
     </section>
   );
 }
