@@ -9,6 +9,7 @@ import AllProducts from './pages/AllProducts.tsx';
 import NewProduct from './pages/NewProduct.tsx';
 import ProductDetail from './pages/ProductDetail.tsx';
 import MyCart from './pages/MyCart.tsx';
+import PrivateRoute from './pages/PrivateRoute.tsx';
 
 const router = createBrowserRouter([
   {
@@ -18,9 +19,23 @@ const router = createBrowserRouter([
     children: [
       { index: true, path: '/', element: <Home /> },
       { path: '/products', element: <AllProducts /> },
-      { path: '/products/new', element: <NewProduct /> },
+      {
+        path: '/products/new',
+        element: (
+          <PrivateRoute adminOnly>
+            <NewProduct />
+          </PrivateRoute>
+        ),
+      },
       { path: '/products/:id', element: <ProductDetail /> },
-      { path: '/carts', element: <MyCart /> },
+      {
+        path: '/carts',
+        element: (
+          <PrivateRoute>
+            <MyCart />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);
