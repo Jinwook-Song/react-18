@@ -7,6 +7,8 @@ import {
   onAuthStateChanged,
   User,
 } from 'firebase/auth';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { UserModel } from '../models';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,23 +23,37 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const firestore = getFirestore();
 const provider = new GoogleAuthProvider();
 
 export async function login() {
   try {
-    const cred = await signInWithPopup(auth, provider);
-    return cred.user;
+    await signInWithPopup(auth, provider);
   } catch (error) {
-    return null;
     console.error('Error signing in with Google:', error);
   }
 }
 
 export async function logout() {
   await signOut(auth);
-  return null;
 }
 
-export async function onUserStateChange(callback: (user: User | null) => void) {
-  onAuthStateChanged(auth, callback);
+export async function onUserStateChange(
+  callback: (user: UserModel | null) => void,
+) {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const isAdmin = await adminUser(user);
+      const userModel: UserModel = { ...user, isAdmin };
+      callback(userModel);
+    } else {
+      callback(null);
+    }
+  });
+}
+
+async function adminUser(user: User) {
+  const docRef = doc(firestore, 'users', user.uid);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data()!['role'] === 'admin';
 }
