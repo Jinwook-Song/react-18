@@ -7,7 +7,13 @@ import {
   onAuthStateChanged,
   User,
 } from 'firebase/auth';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import {
+  Timestamp,
+  doc,
+  getDoc,
+  getFirestore,
+  setDoc,
+} from 'firebase/firestore';
 import { UserModel } from '../models';
 
 const firebaseConfig = {
@@ -26,9 +32,25 @@ const auth = getAuth(app);
 const firestore = getFirestore();
 const provider = new GoogleAuthProvider();
 
+enum FIRESTORE_COLLECTIONS {
+  users = 'users',
+}
+
 export async function login() {
   try {
-    await signInWithPopup(auth, provider);
+    const cred = await signInWithPopup(auth, provider);
+    const uid = cred.user.uid;
+
+    const docRef = doc(firestore, FIRESTORE_COLLECTIONS.users, uid);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+      await setDoc(doc(firestore, FIRESTORE_COLLECTIONS.users, uid), {
+        role: 'none',
+        uid,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
+    }
   } catch (error) {
     console.error('Error signing in with Google:', error);
   }
@@ -53,7 +75,7 @@ export async function onUserStateChange(
 }
 
 async function adminUser(user: User) {
-  const docRef = doc(firestore, 'users', user.uid);
+  const docRef = doc(firestore, FIRESTORE_COLLECTIONS.users, user.uid);
   const docSnap = await getDoc(docRef);
   return docSnap.data()!['role'] === 'admin';
 }
