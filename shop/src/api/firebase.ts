@@ -9,9 +9,13 @@ import {
 } from 'firebase/auth';
 import {
   Timestamp,
+  collection,
   doc,
   getDoc,
+  getDocs,
   getFirestore,
+  orderBy,
+  query,
   setDoc,
 } from 'firebase/firestore';
 import { UserModel } from '../models';
@@ -88,5 +92,19 @@ export async function addNewProduct(product: ProductType) {
     options: product.options.split(','),
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
+  });
+}
+
+export async function getProducts() {
+  const q = query(
+    collection(firestore, FIRESTORE_COLLECTIONS.products),
+    orderBy('createdAt', 'desc'),
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => {
+    const data = doc.data();
+    return { ...data, options: data.options.join(',') } as ProductType;
   });
 }
